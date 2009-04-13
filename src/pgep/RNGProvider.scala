@@ -10,7 +10,7 @@ object RNGProvider {
   private val logFile = "rngseeds.txt"
   private val rngs = new HashMap[Thread, Random] with SynchronizedMap[Thread,Random]
   
-  private def createRng = {
+  private def createRng() = {
     val f = new FileWriter(logFile, true)
     f.write("%s ThreadId:%s ThreadName:\"%s\" seed:%s\n" format (new Date(), currentThread.getId, currentThread.getName, seed))
     f.close
@@ -20,5 +20,5 @@ object RNGProvider {
     rng
   }
 
-  def apply() = rngs.getOrElseUpdate(currentThread, createRng)
+  def apply() = rngs.getOrElseUpdate(currentThread, createRng())
 }
