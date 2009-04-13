@@ -89,57 +89,32 @@ class Gene(val parameters: GeneParameters) {
     
     assert(consistent)
   }
-/*  
-  protected def evalWalk(cfn: (Int, Const) => Unit, vfn: (Int, Var) => Unit, ffn: (Int, Func, Int) => Unit, resultTypes: Array[Class[_]]) {
-    // ezt az egeszet at kellene irni iteratorra
-    var constIdx = 0
-    val k_expr = new Array[Term](resultTypes.length)
-    
-    val lastParameterPos = new Array[Int](parameters.headLen + parameters.tailLen)
-    var last = 0
-    var sum = 0
-    var i = 0
-    while (i < parameters.headLen + parameters.tailLen && sum != (i - 1)) {
-      val term = _k_expression(resultTypes(i))(i)
-      k_expr(i) = term
-      
-      term match {
-        case NextConst => {cfn(i, _constants(resultTypes(i))(constIdx)); constIdx += 1}
-        case Var(_, _) => vfn(i, term.asInstanceOf[Var])
-        case Func => sum += term.nparams
-      }
-      
-      lastParameterPos(i) = sum
-      
-      last = i
-      i += 1
+  
+  protected def evalWalk(resultTypes: Array[Class[_]]) = new Iterator[Tuple3[Term, Int, Any]] {
+    private val (lastParameterPos, lastIdx) = {
+      var sum = 0
+      val lastParameterPos = (0 until parameters.headLen + parameters.tailLen) map (i => {sum += _k_expression(resultTypes(i))(i).nparams; sum}) toArray
+      val lastIdx = lastParameterPos.zipWithIndex map {case (pos, i) => (pos == i)} indexOf (true)
+      (lastParameterPos, lastIdx)
     }
+
+    private var i = lastIdx
+    private var constIdx = 0
     
-    for (i <- new Range(last, -1, -1))
-      k_expr(i) match {
-        case Func => ffn(i, k_expr(i).asInstanceOf[Func], lastParameterPos(i) - k_expr(i).nparams + 1)
-        case _ =>
-      }
-  }
-*/
-  protected def evalWalk(cfn: (Int, Const) => Unit, vfn: (Int, Var) => Unit, ffn: (Int, Func, Int) => Unit, resultTypes: Array[Class[_]]) {
-    // ezt az egeszet at kellene irni iteratorra
-    var sum = 0
-    val lastParameterPos = (0 until parameters.headLen + parameters.tailLen) map (i => {sum += _k_expression(resultTypes(i))(i).nparams; sum}) toArray
-    val lastIdx = lastParameterPos.zipWithIndex map {case (pos, i) => (pos == i)} indexOf (true)
-    
-    var constIdx = 0
-    for (i <- new Range(lastIdx, -1, -1)) {
+    def hasNext = i >= 0 
+    def next() = {
       val tpe = resultTypes(i)
       val term = _k_expression(tpe)(i)
-      term match {
-        case NextConst() => {cfn(i, _constants(tpe)(constIdx)); constIdx += 1}
-        case v: Var => vfn(i, v)
-        case f: Func => ffn(i, f, lastParameterPos(i) - term.nparams + 1)
+      val result = term match {
+        case NextConst() => {constIdx += 1; (_constants(tpe)(constIdx - 1), i, null)}
+        case v: Var => (v, i, null)
+        case f: Func => (f, i, lastParameterPos(i) - term.nparams + 1)
       }
+      i -= 1
+      result
     }
   }
-
+  
   protected def buildResultTypes: Array[Class[_]] = {
     val resultTypes = new Array[Class[_]](parameters.headLen + parameters.tailLen)
     resultTypes(0) = parameters.resultType
@@ -174,24 +149,25 @@ class Gene(val parameters: GeneParameters) {
     }
   }
   
-  protected def expressionTypeConsistent(resultTypes: Array[Class[_]]) = {
-    var consistent = resultTypes(0) == parameters.resultType
-    evalWalk((idx, c) => { },
-    		 (idx, v) => { },
-    		 (idx, f, paramPos) => {for (i <- 0 until f.nparams) {consistent &= f.parameterTypes(i) == resultTypes(paramPos + i)}},
-    		 resultTypes)
-    consistent      
-  }
+  protected def expressionTypeConsistent(resultTypes: Array[Class[_]]) =
+    resultTypes(0) == parameters.resultType &&
+      (evalWalk(resultTypes) forall {
+        case (f: Func, idx, paramPos: Int) => {(0 until f.nparams) forall (i => {f.parameterTypes(i) == resultTypes(paramPos + i)})}
+        case e @ (f: Func, idx, _) => error("Aieeeee: " + e)
+        case _ => true
+      })
   
   def toExpressionString = {
     assert(consistent)
     val resultTypes = buildResultTypes
     
     val values = new Array[String](parameters.headLen + parameters.tailLen)
-    evalWalk((idx, c) => values(idx) = c.toExpressionString,
-             (idx, v) => values(idx) = v.toExpressionString,
-             (idx, f, paramPos) => values(idx) = f.toExpressionString(values, paramPos),
-             resultTypes)
+    evalWalk(resultTypes) foreach {
+      case (c: Const, idx, _) => values(idx) = c.toExpressionString
+      case (v: Var, idx, _) => values(idx) = v.toExpressionString
+      case (f: Func, idx, paramPos: Int) => values(idx) = f.toExpressionString(values, paramPos)
+      case e => error("Aieeeeeeeee: " + e)
+    }
     values(0)
   }
   
@@ -200,10 +176,12 @@ class Gene(val parameters: GeneParameters) {
     val resultTypes = buildResultTypes
     
     val values = new Array[Any](parameters.headLen + parameters.tailLen)
-    evalWalk((idx, c) => values(idx) = c.value,
-             (idx, v) => values(idx) = variables(v.name),
-             (idx, f, paramPos) => values(idx) = f(values, paramPos),
-             resultTypes)
+    evalWalk(resultTypes) foreach {
+      case (c: Const, idx, _) => values(idx) = c.value
+      case (v: Var, idx, _) => values(idx) = variables(v.name)
+      case (f: Func, idx, paramPos: Int) => values(idx) = f(values, paramPos)
+      case e => error("Aieeeeeeeee: " + e)
+    }
     values(0)
   }
 }
