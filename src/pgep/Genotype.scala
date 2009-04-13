@@ -4,14 +4,14 @@ class Genotype(val gp: GenotypeParameters) {
   val genes: Seq[Gene] = (0 until gp.nrGenes) map (i => new Gene(gp.geneParameters(i)))
   
   protected var _matingProbability: Double = _
-  val matingProbability = _matingProbability
+  def matingProbability = _matingProbability
   def matingProbability_=(p: Double) = {
     assert(p >= -0.00000000001 || p.isNaN || p.isInfinity)
     _matingProbability = if (p < 0 || p.isNaN || p.isInfinity) 0 else p
   }
   
   protected var _fitness: Double = _
-  val fitness = _fitness
+  def fitness = _fitness
   def fitness_=(f: Double) = _fitness = f
   
   def randomize(): Unit = randomize(() => true,() => true,() => true)

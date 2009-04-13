@@ -1,7 +1,7 @@
 package pgep
 
 abstract class Term {
-  val nparams = 0
+  def nparams = 0
 }
 
 case class NextConst() extends Term
