@@ -171,7 +171,7 @@ class Gene(val parameters: GeneParameters) {
     values(0)
   }
   
-  def apply(variables: Map[String, Any]) {
+  def apply(variables: Map[String, Any]) = {
     assert(consistent)
     val resultTypes = buildResultTypes
     
