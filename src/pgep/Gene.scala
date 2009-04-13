@@ -23,10 +23,12 @@ class Gene(val parameters: GeneParameters) {
   def randomize(selector_fvc: Selector[SymbolSetKind], selector_vc: Selector[SymbolSetKind],
   				headp: () => Boolean, tailp: () => Boolean, constantsp: () => Boolean) {
     for (tpe <- _k_expression.keys) {
-      val k_expr = _k_expression(tpy)
+      val k_expr = _k_expression(tpe)
       val functions = parameters.functions filter (_.resultType == tpe) toArray
       val variables = parameters.variables filter (_.typee == tpe) toArray
       val constants = parameters.constants(tpy)
+      
+      List.range(0, parameters.headLen)
     }
   }
   

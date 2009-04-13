@@ -1,6 +1,6 @@
 package pgep
 
-sealed abstract class Term {
+abstract class Term {
   val nparams = 0
 }
 
