@@ -4,11 +4,24 @@ abstract class Term {
   val nparams = 0
 }
 
-case class Const(name: String, typee: Class[_], value: Any) extends Term
-case class Var(name: String, typee: Class[_]) extends Term
-case class Func(name: String, parameterTypes: List[Class[_]], resultType: Class[_], fn: List[Any] => Any, strFn: List[String] => String) extends Term {
-  def apply = fn
-  def applyStr = strFn
+case class NextConst() extends Term
+
+case class ConstKind() extends Term
+case class Const(name: String, typee: Class[_], value: Any) extends ConstKind {
+  def toExpressionString = name + "[" + value + "]"
+}
+
+case class VarKind() extends Term
+case class Var(name: String, typee: Class[_]) extends VarKind {
+  def toExpressionString = name
+}
+
+case class FuncKind() extends Term
+case class Func(name: String, parameterTypes: List[Class[_]], resultType: Class[_],
+                fn: Seq[Any] => Any, strFn: Seq[String] => String) extends FuncKind {
+  def apply(values: Array[Any], paramPos: Int) = fn(values slice (paramPos, values.length))
+  def toExpressionString(values: Array[String], paramPos: Int) = strFn(values slice (paramPos, values.length))
   
   override val nparams = parameterTypes.length
 }
+
