@@ -7,7 +7,7 @@ import scala.collection.mutable.{HashMap,SynchronizedMap}
 
 object RNGProvider {
   var seed: Int = (new Date().getTime & Integer.MAX_VALUE).asInstanceOf[Int]
-  private val logFile = "rngseeds.txt"
+  private def logFile = "rngseeds.txt"
   private val rngs = new HashMap[Thread, Random] with SynchronizedMap[Thread,Random]
   
   private def createRng() = {
