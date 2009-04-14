@@ -19,8 +19,8 @@ case class Var(name: String, typee: Class[_]) extends VarKind {
 case class FuncKind() extends Term
 case class Func(name: String, parameterTypes: List[Class[_]], resultType: Class[_],
                 fn: Seq[Any] => Any, strFn: Seq[String] => String) extends FuncKind {
-  def apply(values: Array[Any], paramPos: Int) = fn(values slice (paramPos, values.length))
-  def toExpressionString(values: Array[String], paramPos: Int) = strFn(values slice (paramPos, values.length))
+  def apply(values: Seq[Any], paramPos: Int) = fn(values slice (paramPos, values.length))
+  def toExpressionString(values: Seq[String], paramPos: Int) = strFn(values slice (paramPos, values.length))
   
   override val nparams = parameterTypes.length
 }
