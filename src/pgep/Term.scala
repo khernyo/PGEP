@@ -8,12 +8,12 @@ case class NextConst() extends Term
 
 case class ConstKind() extends Term
 case class Const(name: String, typee: Class[_], value: Any) extends ConstKind {
-  def toExpressionString = name + "[" + value + "]"
+  def toExpressionString() = name + "[" + value + "]"
 }
 
 case class VarKind() extends Term
 case class Var(name: String, typee: Class[_]) extends VarKind {
-  def toExpressionString = name
+  def toExpressionString() = name
 }
 
 case class FuncKind() extends Term

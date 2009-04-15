@@ -4,7 +4,7 @@ class GenotypeParameters(val nrGenes: Int, val geneLinkingFunction: Func,
                          val selector_fvc: Selector[Term], val selector_vc: Selector[Term],
 						 val geneParameters: Seq[GeneParameters]) {
   
-  def this(nrGenes: Int, headLen: Int, tailLen: Int, geneLinkingFunction: Func, geneResultTypes: Array[Class[_]],
+  def this(nrGenes: Int, headLen: Int, tailLen: Int, geneLinkingFunction: Func, geneResultTypes: List[Class[_]],
 		   functions: Alphabet[Func], variables: Alphabet[Var], constants: Map[Class[_], Alphabet[Const]],
 		   tp: TermProbabilities) {
 	this(nrGenes, geneLinkingFunction, 
