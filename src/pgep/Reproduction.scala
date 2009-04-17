@@ -11,5 +11,5 @@ abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSel
     di
   }
   
-  protected def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
+  protected[pgep] def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
 }

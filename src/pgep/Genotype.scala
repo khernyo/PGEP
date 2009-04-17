@@ -2,8 +2,7 @@ package pgep
 
 object Genotype {
   def apply(gp: GenotypeParameters) = {
-    val genes: Seq[Gene] = (0 until gp.nrGenes) map (i => Gene(gp.geneParameters(i)))
-    
+    val genes = (0 until gp.nrGenes) map (i => Gene(gp.geneParameters(i))) toArray;    
     new Genotype(gp, genes)
   }
   
@@ -32,7 +31,7 @@ object Genotype {
 }
 
 class Genotype(val gp: GenotypeParameters,
-               val genes: Seq[Gene]) {
+               val genes: Array[Gene]) {
   
   private var _matingProbability: Double = _
   def matingProbability = _matingProbability
@@ -86,5 +85,7 @@ class Genotype(val gp: GenotypeParameters,
     for (gene <- genes)
       gene.cloneConsts()
   }
+  
+  override def clone() = new Genotype(gp, genes map (_.clone()))
 }
 

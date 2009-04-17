@@ -196,4 +196,14 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
       for (i <- (0 until parameters.tailLen))
         _constants(tpe)(i) = _constants(tpe)(i).clone()
   }
+  
+  override def clone() = {
+    val cloned = Gene(parameters)
+    for (tpe <- _k_expression.keys)
+      Array.copy(_k_expression(tpe), 0, cloned._k_expression(tpe), 0, _k_expression(tpe).length)
+    for (tpe <- _constants.keys)
+      Array.copy(_constants(tpe), 0, cloned._constants(tpe), 0, _constants(tpe).length)
+    
+    cloned
+  }
 }
