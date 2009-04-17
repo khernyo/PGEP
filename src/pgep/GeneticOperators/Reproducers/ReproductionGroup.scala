@@ -8,5 +8,5 @@ class ReproductionGroup(selection: GenotypeSelection,
   protected val selector = new ExactSelector(probabilities, ops)
   
   protected[Reproducers] override def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int =
-    selector.apply().apply(src, selectionIndices, dst, dstIdx)
+    selector()(src, selectionIndices, dst, dstIdx)
 }
