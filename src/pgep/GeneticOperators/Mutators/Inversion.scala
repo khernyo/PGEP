@@ -1,11 +1,11 @@
-package pgep.GeneticOperators
+package pgep.GeneticOperators.Mutators
 
 class Inversion(inversionProbability: Double, maxInversionSectorLen: Int, selection: GenotypeSelection) extends MutationBase(selection) {
   require(inversionProbability >= 0)
   require(inversionProbability <= 1)
   require(maxInversionSectorLen > 0)
   
-  override def apply(gt: Genotype) {
+  protected[Mutators] override def apply(gt: Genotype) {
     for (gene <- gt.genes)
       if (random.nextDouble < inversionProbability) {
         val invLen = random.nextInt(maxInversionSectorLen + 1)

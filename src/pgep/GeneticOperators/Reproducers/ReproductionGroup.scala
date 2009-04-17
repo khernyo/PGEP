@@ -1,4 +1,4 @@
-package pgep.GeneticOperators
+package pgep.GeneticOperators.Reproducers
 
 class ReproductionGroup(selection: GenotypeSelection,
                         probabilities: List[Double],
@@ -7,6 +7,6 @@ class ReproductionGroup(selection: GenotypeSelection,
 
   protected val selector = new ExactSelector(probabilities, ops)
   
-  protected[pgep] override def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int =
+  protected[Reproducers] override def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int =
     selector.apply().apply(src, selectionIndices, dst, dstIdx)
 }

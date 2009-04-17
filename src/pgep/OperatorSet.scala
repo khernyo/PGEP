@@ -1,5 +1,8 @@
 package pgep
 
+import GeneticOperators.Mutators.MutationBase
+import GeneticOperators.Reproducers.Reproduction
+
 object OperatorSet {
   def apply(fitnessFunction: (Genotype) => Double, mpf: MatingProbabilityFunction, gos: List[GeneticOperator]) = {
     val reproducers = gos filter {case r: Reproduction => true; case _ => false} map {case r: Reproduction => r}

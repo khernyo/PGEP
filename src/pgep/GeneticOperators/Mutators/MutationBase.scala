@@ -1,4 +1,4 @@
-package pgep
+package pgep.GeneticOperators.Mutators
 
 abstract class MutationBase(selection: GenotypeSelection) extends GeneticOperator(1, 1, selection){
   def apply(genotypes: Array[Genotype]) {
@@ -8,5 +8,5 @@ abstract class MutationBase(selection: GenotypeSelection) extends GeneticOperato
 	}
   }
   
-  protected def apply(gt: Genotype)
+  protected[Mutators] def apply(gt: Genotype)
 }

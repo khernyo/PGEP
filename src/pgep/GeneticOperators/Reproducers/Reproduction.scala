@@ -1,4 +1,4 @@
-package pgep
+package pgep.GeneticOperators.Reproducers
 
 abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSelection) extends GeneticOperator(nparams, nchildren, selection) {
   def apply(src: Array[Genotype], dst: Array[Genotype], dstIdx: Int): Int = {
@@ -11,5 +11,5 @@ abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSel
     di
   }
   
-  protected[pgep] def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
+  protected[Reproducers] def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
 }

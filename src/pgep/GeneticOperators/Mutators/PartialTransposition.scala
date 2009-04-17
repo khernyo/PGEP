@@ -1,11 +1,11 @@
-package pgep.GeneticOperators
+package pgep.GeneticOperators.Mutators
 
 class PartialTransposition(transpositionProbability: Double, maxTransposonLen: Int, selection: GenotypeSelection) extends MutationBase(selection) {
   require(maxTransposonLen > 0)
   require(transpositionProbability >= 0)
   require(transpositionProbability <= 1)
   
-  protected override def apply(gt: Genotype) {
+  protected[Mutators] override def apply(gt: Genotype) {
     for (srcGene <- gt.genes)
       if (random.nextDouble() < transpositionProbability) {
         val trLen = random.nextInt(maxTransposonLen) + 1

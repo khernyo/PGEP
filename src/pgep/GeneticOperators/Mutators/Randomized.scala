@@ -1,7 +1,7 @@
-package pgep.GeneticOperators
+package pgep.GeneticOperators.Mutators
 
 class Randomized(selection: GenotypeSelection) extends MutationBase(selection) {
-  protected override def apply(gt: Genotype) {
+  protected[Mutators] override def apply(gt: Genotype) {
     gt.randomize()
   } 
 }
