@@ -1,5 +1,7 @@
 package pgep
 
+import scala.collection.Map
+
 class EngineParameters(ngenes: Int, headLen_ : Int, maxNrGenerations_ : Int,
                        functions: Alphabet[Func], variables: Alphabet[Var], tp: TermProbabilities,
 					   geneLinkingFunction: Func, operators_ : OperatorSet, constCreators_ : Map[Class[_], () => Any],
@@ -7,7 +9,7 @@ class EngineParameters(ngenes: Int, headLen_ : Int, maxNrGenerations_ : Int,
   val operators = operators_
   val constCreators = constCreators_
   val nConstants = nConstants_
-  val constantMutationProbability = Math.pow(constantMutationProbability_, nConstants) * nConstants
+  val constantMutationProbability = constantMutationProbability_
   val maxNrGenerations = maxNrGenerations_
   
   protected val (headLen, tailLen) = {

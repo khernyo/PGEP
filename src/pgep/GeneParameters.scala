@@ -1,5 +1,7 @@
 package pgep
 
+import scala.collection.Map
+
 class GeneParameters(val headLen: Int, val tailLen: Int, val resultType: Class[_],
                      val functions: Alphabet[Func], val variables: Alphabet[Var], val constants: Map[Class[_], Alphabet[Const]]) {
   {  

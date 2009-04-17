@@ -184,4 +184,10 @@ class Gene(val parameters: GeneParameters) {
     }
     values(0)
   }
+  
+  def cloneConsts() {
+    for (tpe <- _constants.keys)
+      for (i <- (0 until parameters.tailLen))
+        _constants(tpe)(i) = _constants(tpe)(i).clone()
+  }
 }

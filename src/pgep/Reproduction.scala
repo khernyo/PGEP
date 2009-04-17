@@ -1,7 +1,7 @@
 package pgep
 
 abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSelection) extends GeneticOperator(nparams, nchildren, selection) {
-  def apply(src: List[Genotype], dst: Array[Genotype], dstIdx: Int): Int = {
+  def apply(src: Array[Genotype], dst: Array[Genotype], dstIdx: Int): Int = {
     var di = dstIdx
     for (sel <- selection.select(src)) {
       assert(sel.length == nparams)
@@ -11,5 +11,5 @@ abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSel
     di
   }
   
-  protected def apply(src: List[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
+  protected def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int): Int
 }

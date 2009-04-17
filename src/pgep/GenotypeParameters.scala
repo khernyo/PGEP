@@ -1,5 +1,7 @@
 package pgep
 
+import scala.collection.Map
+
 class GenotypeParameters(val nrGenes: Int, val geneLinkingFunction: Func,
                          val selector_fvc: Selector[Term], val selector_vc: Selector[Term],
 						 val geneParameters: Seq[GeneParameters]) {

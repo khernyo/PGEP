@@ -75,5 +75,10 @@ class Genotype(val gp: GenotypeParameters) {
     else
       (ses remove invalid reduceLeft (_ + _)) / (variableCases.length - nrInvalid)
   }
+  
+  def cloneConsts() {
+    for (gene <- genes)
+      gene.cloneConsts()
+  }
 }
 
