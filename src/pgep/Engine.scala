@@ -19,8 +19,10 @@ object Engine {
   }
 }
 
-class Engine(params: EngineParameters, var population: Array[Genotype], constants: HashMap[Class[_], AlphabetRW[Const]], gtParams: GenotypeParameters) {
+class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[Class[_], AlphabetRW[Const]], gtParams: GenotypeParameters) {
   protected val random = RNGProvider()
+  
+  protected var population = pop
   
   private var _fittest: Genotype = _
   def fittest = _fittest
@@ -33,7 +35,7 @@ class Engine(params: EngineParameters, var population: Array[Genotype], constant
   protected def generation_=(gen: Int) = _generation = gen
   
   protected def evolve(gts: Array[Genotype]) = {
-    val newGenotypes = (0 until population.length) map (_ => new Genotype(gtParams)) toArray
+    val newGenotypes = (0 until population.length) map (_ => Genotype(gtParams)) toArray
     
     var dstIdx = 0
     for (rep <- params.operators.reproducers)
@@ -82,7 +84,7 @@ class Engine(params: EngineParameters, var population: Array[Genotype], constant
   
   protected def randomize() {
     for (i <- (0 until population.length)) {
-      population(i) = new Genotype(gtParams)
+      population(i) = Genotype(gtParams)
       population(i).randomize()
     }
   }

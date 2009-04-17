@@ -1,6 +1,12 @@
 package pgep
 
 object Genotype {
+  def apply(gp: GenotypeParameters) = {
+    val genes: Seq[Gene] = (0 until gp.nrGenes) map (i => Gene(gp.geneParameters(i)))
+    
+    new Genotype(gp, genes)
+  }
+  
   def copyLinearStructure(src: Genotype, dst: Genotype, geneStart: Int, symbolStart: Int, geneEnd: Int, symbolEnd: Int) {
     assert(geneStart < geneEnd)
     assert(geneEnd - geneStart > 1 || symbolStart < symbolEnd)
@@ -25,17 +31,17 @@ object Genotype {
   }
 }
 
-class Genotype(val gp: GenotypeParameters) {
-  val genes: Seq[Gene] = (0 until gp.nrGenes) map (i => new Gene(gp.geneParameters(i)))
+class Genotype(val gp: GenotypeParameters,
+               val genes: Seq[Gene]) {
   
-  protected var _matingProbability: Double = _
+  private var _matingProbability: Double = _
   def matingProbability = _matingProbability
   def matingProbability_=(p: Double) = {
     assert(p >= -0.00000000001 || p.isNaN || p.isInfinity)
     _matingProbability = if (p < 0 || p.isNaN || p.isInfinity) 0 else p
   }
   
-  protected var _fitness: Double = _
+  private var _fitness: Double = _
   def fitness = _fitness
   def fitness_=(f: Double) = _fitness = f
   

@@ -1,8 +1,26 @@
 package pgep
 
+import scala.collection.Map
 import scala.collection.mutable.{HashMap,HashSet}
 
 object Gene {
+  def apply(parameters: GeneParameters) = {
+    val k_expr = new HashMap[Class[_], Array[Term]]
+    val consts = new HashMap[Class[_], Array[Const]]
+    
+    val types = new HashSet[Class[_]]
+    types ++= parameters.functions map (_.resultType)
+    types ++= parameters.variables map (_.typee)
+    types ++= parameters.constants.keys
+    
+    types foreach { t =>
+      k_expr(t) = new Array(parameters.headLen + parameters.tailLen)
+      consts(t) = new Array(parameters.tailLen)
+    }
+    
+    new Gene(parameters, k_expr, consts)
+  }
+  
   def copySymbols(src: Gene, dst: Gene, srcStart: Int, dstStart: Int, length: Int) {
     val tmp = new Array[Term](length)
     src._k_expression.keys foreach {tpe => 
@@ -41,23 +59,11 @@ object Gene {
   }
 }
 
-class Gene(val parameters: GeneParameters) {
-  val _k_expression = new HashMap[Class[_], Array[Term]]
-  private val _constants = new HashMap[Class[_], Array[Const]]
+class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]], constants: Map[Class[_], Array[Const]]) {
+  val _k_expression = k_expression
+  private val _constants = constants
   
   private val random = RNGProvider()
-  
-  {
-    val types = new HashSet[Class[_]]
-    types ++= parameters.functions map (_.resultType)
-    types ++= parameters.variables map (_.typee)
-    types ++= parameters.constants.keys
-    
-    types foreach { t =>
-      _k_expression(t) = new Array(parameters.headLen + parameters.tailLen)
-      _constants(t) = new Array(parameters.tailLen)
-    }
-  }
   
   def randomize(selector_fvc: Selector[Term], selector_vc: Selector[Term],
   				headp: () => Boolean, tailp: () => Boolean, constp: () => Boolean) {
