@@ -13,10 +13,10 @@ class Inversion(inversionProbability: Double, maxInversionSectorLen: Int, select
         val invEnd = invStart + invLen - 1
         
         for (j <- (0 until invLen / 2))
-          for (tpe <- gene._k_expression.keys) {
-            val tmp = gene._k_expression(tpe)(invStart + j)
-            gene._k_expression(tpe)(invStart + j) = gene._k_expression(tpe)(invEnd - j)
-            gene._k_expression(tpe)(invEnd - j) = tmp
+          for (typ <- gene._k_expression.keys) {
+            val tmp = gene._k_expression(typ)(invStart + j)
+            gene._k_expression(typ)(invStart + j) = gene._k_expression(typ)(invEnd - j)
+            gene._k_expression(typ)(invEnd - j) = tmp
           }
       }
   }

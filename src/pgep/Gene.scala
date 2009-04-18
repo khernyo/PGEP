@@ -23,16 +23,16 @@ object Gene {
   
   def copySymbols(src: Gene, dst: Gene, srcStart: Int, dstStart: Int, length: Int) {
     val tmp = new Array[Term](length)
-    src._k_expression.keys foreach {tpe => 
-      copySymbols(tpe, src, tmp, srcStart, 0, length)
-      copySymbols(tpe, tmp, dst, 0, dstStart, length)
+    src._k_expression.keys foreach {typ => 
+      copySymbols(typ, src, tmp, srcStart, 0, length)
+      copySymbols(typ, tmp, dst, 0, dstStart, length)
     }
     assert(dst.consistent)
   }
   
-  protected def copySymbols(tpe: Class[_], src: Gene, dst: Array[Term], srcStart: Int, dstStart: Int, length: Int) {
-    val k_expr = src._k_expression(tpe)
-    val consts = src._constants(tpe)
+  protected def copySymbols(typ: Class[_], src: Gene, dst: Array[Term], srcStart: Int, dstStart: Int, length: Int) {
+    val k_expr = src._k_expression(typ)
+    val consts = src._constants(typ)
     if (srcStart < k_expr.length) {
       val len = Math.min(srcStart + length, k_expr.length) - srcStart
       Array.copy(k_expr, srcStart, dst, dstStart, len)
@@ -44,9 +44,9 @@ object Gene {
     }
   }
 
-  protected def copySymbols(tpe: Class[_], src: Array[Term], dst: Gene, srcStart: Int, dstStart: Int, length: Int) {
-    val k_expr = dst._k_expression(tpe)
-    val consts = dst._constants(tpe)
+  protected def copySymbols(typ: Class[_], src: Array[Term], dst: Gene, srcStart: Int, dstStart: Int, length: Int) {
+    val k_expr = dst._k_expression(typ)
+    val consts = dst._constants(typ)
     if (dstStart < k_expr.length) {
       val len = Math.min(dstStart + length, k_expr.length) - dstStart
       Array.copy(src, srcStart, k_expr, dstStart, len)
@@ -67,11 +67,11 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   
   def randomize(selector_fvc: Selector[Term], selector_vc: Selector[Term],
   				headp: () => Boolean, tailp: () => Boolean, constp: () => Boolean) {
-    for (tpe <- _k_expression.keys) {
-      val k_expr = _k_expression(tpe)
-      val functions = parameters.functions filter (_.resultType == tpe) toArray
-      val variables = parameters.variables filter (_.typ == tpe) toArray
-      val constants = parameters.constants(tpe)
+    for (typ <- _k_expression.keys) {
+      val k_expr = _k_expression(typ)
+      val functions = parameters.functions filter (_.resultType == typ) toArray
+      val variables = parameters.variables filter (_.typ == typ) toArray
+      val constants = parameters.constants(typ)
       
       for (i <- 0 until parameters.headLen)
         if (headp())
@@ -90,7 +90,7 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
       
       for (i <- 0 until parameters.tailLen)
         if (constp())
-          _constants(tpe)(i) = constants(random.nextInt(constants.length))
+          _constants(typ)(i) = constants(random.nextInt(constants.length))
     }
     
     assert(consistent)
@@ -109,10 +109,10 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
     
     def hasNext = i >= 0 
     def next() = {
-      val tpe = resultTypes(i)
-      val term = _k_expression(tpe)(i)
+      val typ = resultTypes(i)
+      val term = _k_expression(typ)(i)
       val result = term match {
-        case NextConst() => {constIdx += 1; (_constants(tpe)(constIdx - 1), i, null)}
+        case NextConst() => {constIdx += 1; (_constants(typ)(constIdx - 1), i, null)}
         case v: Var => (v, i, null)
         case f: Func => (f, i, lastParameterPos(i) - term.nparams + 1)
       }
@@ -129,7 +129,7 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
     var paramPos = 0
     while (i <= paramPos) {
       _k_expression(resultTypes(i))(i) match {
-        case f: Func => f.parameterTypes foreach ( tpe => {paramPos += 1; resultTypes(paramPos) = tpe})
+        case f: Func => f.parameterTypes foreach ( typ => {paramPos += 1; resultTypes(paramPos) = typ})
         case _ =>
       }
       i += 1
@@ -140,17 +140,17 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   
   protected def consistent = {
     _k_expression.forall {
-      case (tpe, terms) => terms forall {
+      case (typ, terms) => terms forall {
         case null => true
         case NextConst() => true
-        case v: Var => v.typ == tpe
-        case f: Func => f.resultType == tpe
+        case v: Var => v.typ == typ
+        case f: Func => f.resultType == typ
         case _ => false
       }
     } && _constants.forall {
-      case (tpe, const) => const forall {
+      case (typ, const) => const forall {
         case null => true
-        case c: Const => c.typ == tpe
+        case c: Const => c.typ == typ
       }
     }
   }
@@ -192,17 +192,17 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   }
   
   def cloneConsts() {
-    for (tpe <- _constants.keys)
+    for (typ <- _constants.keys)
       for (i <- (0 until parameters.tailLen))
-        _constants(tpe)(i) = _constants(tpe)(i).clone()
+        _constants(typ)(i) = _constants(typ)(i).clone()
   }
   
   override def clone() = {
     val cloned = Gene(parameters)
-    for (tpe <- _k_expression.keys)
-      Array.copy(_k_expression(tpe), 0, cloned._k_expression(tpe), 0, _k_expression(tpe).length)
-    for (tpe <- _constants.keys)
-      Array.copy(_constants(tpe), 0, cloned._constants(tpe), 0, _constants(tpe).length)
+    for (typ <- _k_expression.keys)
+      Array.copy(_k_expression(typ), 0, cloned._k_expression(typ), 0, _k_expression(typ).length)
+    for (typ <- _constants.keys)
+      Array.copy(_constants(typ), 0, cloned._constants(typ), 0, _constants(typ).length)
     
     cloned
   }
