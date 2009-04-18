@@ -1,11 +1,9 @@
 package pgep
 
-import scala.collection.Map
-
 object EngineParameters {
   def apply(ngenes: Int, headLen : Int, maxNrGenerations : Int, functions: Alphabet[Func], variables: Alphabet[Var],
             tp: TermProbabilities, geneLinkingFunction: Func, operators : OperatorSet, constCreators : Map[Class[_], () => Any],
-            constantMutationProbability : Double, nConstants : Int, geneResultTypes : List[Class[_]]) {
+            constantMutationProbability : Double, nConstants : Int, geneResultTypes : List[Class[_]]) = {
     
     assert(ngenes > 0)
     assert((geneLinkingFunction == null) != (geneResultTypes == null))

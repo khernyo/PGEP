@@ -10,7 +10,7 @@ object Engine {
     for ((typ, fn) <- params.constCreators)
       consts(typ) = new AlphabetRW[Const]((0 until params.nConstants).map (i => Const(Symbol("C" + i), typ, fn())): _*) 
 
-    val gtParams = params.createGenotypeParameters(consts)
+    val gtParams = params.createGenotypeParameters(Map(consts.elements toList: _*))
     
     val engine = new Engine(params, population, consts, gtParams)
     engine.randomize()

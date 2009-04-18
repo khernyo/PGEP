@@ -49,7 +49,7 @@ class Genotype(val gp: GenotypeParameters,
     genes foreach {_.randomize(gp.selector_fvc, gp.selector_vc, headp, tailp, constp)}
   }
   
-  def apply(variables: Map[String, Any]):List[Any] = {
+  def apply(variables: Map[Symbol, Any]):List[Any] = {
     val geneValues = genes map (_(variables)) toList;
     if (gp.geneLinkingFunction == null)
       geneValues
@@ -65,7 +65,7 @@ class Genotype(val gp: GenotypeParameters,
       "[" + geneValues.mkString(", ") + "]"
   }
   
-  def meanSquaredError(errorFn: (Any, Any) => Double, variableCases: List[Map[String, Any]], expectedValues: List[List[Any]],
+  def meanSquaredError(errorFn: (Any, Any) => Double, variableCases: List[Map[Symbol, Any]], expectedValues: List[List[Any]],
                         maxInvalidResults: Int) = {
     val errFn = Function.tupled(errorFn)
     val sumOfErrorSquares = (expected: List[Any], actual: List[Any]) => (expected zip actual) map errFn map (x => x * x) reduceLeft (_ + _)

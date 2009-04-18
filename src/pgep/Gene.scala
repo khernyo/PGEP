@@ -177,14 +177,14 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
     values(0)
   }
   
-  def apply(variables: Map[String, Any]) = {
+  def apply(variables: Map[Symbol, Any]) = {
     assert(consistent)
     val resultTypes = buildResultTypes
     
     val values = new Array[Any](parameters.headLen + parameters.tailLen)
     evalWalk(resultTypes) foreach {
       case (c: Const, idx, _) => values(idx) = c.value
-      case (v: Var, idx, _) => values(idx) = variables(v.name.name)
+      case (v: Var, idx, _) => values(idx) = variables(v.name)
       case (f: Func, idx, paramPos: Int) => values(idx) = f(values, paramPos)
       case e => error("Aieeeeeeeee: " + e)
     }
