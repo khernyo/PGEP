@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Mutators
 
-class GeneTransposition(transpositionProbability: Double, maxTransposonLen: Int, selection: GenotypeSelection) extends Mutator(selection) {
+class GeneTransposition(transpositionProbability: Double, maxTransposonLen: Int, selection: GenotypeSelector) extends Mutator(selection) {
   protected val transposon = new Array[Gene](maxTransposonLen)
 
   protected[Mutators] override def apply(gt: Genotype) {      // FIXME ez itt bugos bazmeg

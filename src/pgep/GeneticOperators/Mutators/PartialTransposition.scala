@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Mutators
 
-class PartialTransposition(transpositionProbability: Double, maxTransposonLen: Int, selection: GenotypeSelection) extends Mutator(selection) {
+class PartialTransposition(transpositionProbability: Double, maxTransposonLen: Int, selection: GenotypeSelector) extends Mutator(selection) {
   require(maxTransposonLen > 0)
   require(transpositionProbability >= 0)
   require(transpositionProbability <= 1)

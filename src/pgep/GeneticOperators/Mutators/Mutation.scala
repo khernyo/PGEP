@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Mutators
 
-class Mutation(headMutProb: Double, tailMutProb: Double, constMutProb: Double, selection: GenotypeSelection) extends Mutator(selection) {
+class Mutation(headMutProb: Double, tailMutProb: Double, constMutProb: Double, selection: GenotypeSelector) extends Mutator(selection) {
   require(headMutProb >= 0)
   require(tailMutProb >= 0)
   require(constMutProb >= 0)

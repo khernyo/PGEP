@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Reproducers
 
-class ReproductionGroup(selection: GenotypeSelection,
+class ReproductionGroup(selection: GenotypeSelector,
                         probabilities: List[Double],
                         ops: List[Reproducer]) extends Reproducer(ops.head.nparams, ops.head.nchildren, selection) {
   require(ops forall (op => op.nchildren == nchildren && op.nparams == nparams))

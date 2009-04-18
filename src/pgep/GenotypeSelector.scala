@@ -1,5 +1,5 @@
 package pgep
 
-abstract class GenotypeSelection {
+abstract class GenotypeSelector {
 	def select(genotypes: Array[Genotype]): List[List[Int]]
 }

@@ -2,6 +2,6 @@ package pgep
 
 abstract class GeneticOperator(val nparams: Int,
                                val nchildren: Int,
-                               val selection: GenotypeSelection) {
+                               val selection: GenotypeSelector) {
   protected val random = RNGProvider() 
 }
