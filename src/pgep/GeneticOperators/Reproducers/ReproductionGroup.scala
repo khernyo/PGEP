@@ -2,7 +2,7 @@ package pgep.GeneticOperators.Reproducers
 
 class ReproductionGroup(selection: GenotypeSelection,
                         probabilities: List[Double],
-                        ops: List[Reproduction]) extends Reproduction(ops.head.nparams, ops.head.nchildren, selection) {
+                        ops: List[Reproducer]) extends Reproducer(ops.head.nparams, ops.head.nchildren, selection) {
   require(ops forall (op => op.nchildren == nchildren && op.nparams == nparams))
 
   protected val selector = new ExactSelector(probabilities, ops)

@@ -1,12 +1,12 @@
 package pgep
 
-import GeneticOperators.Mutators.MutationBase
-import GeneticOperators.Reproducers.Reproduction
+import GeneticOperators.Mutators.Mutator
+import GeneticOperators.Reproducers.Reproducer
 
 object OperatorSet {
   def apply(fitnessFunction: (Genotype) => Double, mpf: MatingProbabilityFunction, gos: List[GeneticOperator]) = {
-    val reproducers = gos filter {case r: Reproduction => true; case _ => false} map {case r: Reproduction => r}
-    val modifiers = gos filter {case m: MutationBase => true; case _ => false} map {case m: MutationBase => m}
+    val reproducers = gos filter {case r: Reproducer => true; case _ => false} map {case r: Reproducer => r}
+    val modifiers = gos filter {case m: Mutator => true; case _ => false} map {case m: Mutator => m}
     assert(reproducers.length + modifiers.length == gos.length)
     new OperatorSet(fitnessFunction, mpf, reproducers, modifiers)
   }
@@ -14,5 +14,5 @@ object OperatorSet {
 
 class OperatorSet(val fitnessFunction: (Genotype) => Double,
                   val mpf: MatingProbabilityFunction,
-                  val reproducers: List[Reproduction],
-                  val modifiers: List[MutationBase])
+                  val reproducers: List[Reproducer],
+                  val modifiers: List[Mutator])

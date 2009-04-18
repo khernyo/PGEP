@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Reproducers
 
-abstract class Reproduction(nparams: Int, nchildren: Int, selection: GenotypeSelection) extends GeneticOperator(nparams, nchildren, selection) {
+abstract class Reproducer(nparams: Int, nchildren: Int, selection: GenotypeSelection) extends GeneticOperator(nparams, nchildren, selection) {
   def apply(src: Array[Genotype], dst: Array[Genotype], dstIdx: Int): Int = {
     var di = dstIdx
     for (sel <- selection.select(src)) {

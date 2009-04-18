@@ -1,6 +1,6 @@
 package pgep.GeneticOperators.Mutators
 
-class Inversion(inversionProbability: Double, maxInversionSectorLen: Int, selection: GenotypeSelection) extends MutationBase(selection) {
+class Inversion(inversionProbability: Double, maxInversionSectorLen: Int, selection: GenotypeSelection) extends Mutator(selection) {
   require(inversionProbability >= 0)
   require(inversionProbability <= 1)
   require(maxInversionSectorLen > 0)
