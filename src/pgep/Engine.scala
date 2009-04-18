@@ -78,7 +78,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
       while (random.nextDouble() < params.constantMutationProbability) {
         val i = random.nextInt(params.nConstants)
         val c = constants(tpe)(i)
-        constants(tpe)(i) = Const(c.name, c.typee, params.constCreators(tpe)())
+        constants(tpe)(i) = Const(c.name, c.typ, params.constCreators(tpe)())
       }
   }
   

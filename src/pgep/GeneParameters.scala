@@ -4,16 +4,16 @@ import scala.collection.Map
 
 object GeneParameters {
   protected def check(gp: GeneParameters) {  
-    assume(gp.constants forall {case (t, a) => a forall (_.typee == t)}, "inconsistent constants")
+    assume(gp.constants forall {case (t, a) => a forall (_.typ == t)}, "inconsistent constants")
     
     val types = new scala.collection.mutable.HashSet[Class[_]]
     types ++= gp.functions flatMap (f => f.resultType :: f.parameterTypes)
-    types ++= gp.variables map (_.typee)
+    types ++= gp.variables map (_.typ)
     types ++= gp.constants.keys
     
     for (t <- types) {
       if (!gp.functions.exists(_.resultType == t) ||
-          !gp.variables.exists(_.typee == t) ||
+          !gp.variables.exists(_.typ == t) ||
           !gp.constants.exists(_ == t))
         throw new IllegalArgumentException("Not all types are covered by Alphabets!");
     }  

@@ -7,13 +7,13 @@ abstract class Term {
 case class NextConst() extends Term
 
 case class ConstKind() extends Term
-case class Const(name: Symbol, typee: Class[_], value: Any) extends ConstKind {
+case class Const(name: Symbol, typ: Class[_], value: Any) extends ConstKind {
   def toExpressionString(): String = name + "[" + value + "]"
-  override def clone() = Const(name, typee, value)
+  override def clone() = Const(name, typ, value)
 }
 
 case class VarKind() extends Term
-case class Var(name: Symbol, typee: Class[_]) extends VarKind {
+case class Var(name: Symbol, typ: Class[_]) extends VarKind {
   def toExpressionString(): String = name.name
 }
 

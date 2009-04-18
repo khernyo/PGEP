@@ -10,7 +10,7 @@ object Gene {
     
     val types = new HashSet[Class[_]]
     types ++= parameters.functions map (_.resultType)
-    types ++= parameters.variables map (_.typee)
+    types ++= parameters.variables map (_.typ)
     types ++= parameters.constants.keys
     
     types foreach { t =>
@@ -70,7 +70,7 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
     for (tpe <- _k_expression.keys) {
       val k_expr = _k_expression(tpe)
       val functions = parameters.functions filter (_.resultType == tpe) toArray
-      val variables = parameters.variables filter (_.typee == tpe) toArray
+      val variables = parameters.variables filter (_.typ == tpe) toArray
       val constants = parameters.constants(tpe)
       
       for (i <- 0 until parameters.headLen)
@@ -143,14 +143,14 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
       case (tpe, terms) => terms forall {
         case null => true
         case NextConst() => true
-        case v: Var => v.typee == tpe
+        case v: Var => v.typ == tpe
         case f: Func => f.resultType == tpe
         case _ => false
       }
     } && _constants.forall {
       case (tpe, const) => const forall {
         case null => true
-        case c: Const => c.typee == tpe
+        case c: Const => c.typ == tpe
       }
     }
   }
