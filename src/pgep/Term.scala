@@ -20,8 +20,8 @@ case class Var(name: Symbol, typ: Class[_]) extends VarKind {
 case class FuncKind() extends Term
 case class Func(name: Symbol, parameterTypes: List[Class[_]], resultType: Class[_],
                 fn: Seq[Any] => Any, strFn: Seq[String] => String) extends FuncKind {
-  def apply(values: Seq[Any], paramPos: Int) = fn(values slice (paramPos, parameterTypes.length))
-  def toExpressionString(values: Seq[String], paramPos: Int): String = strFn(values slice (paramPos, parameterTypes.length))
+  def apply(values: Seq[Any], paramPos: Int) = fn(values.drop(paramPos).take(parameterTypes.length))
+  def toExpressionString(values: Seq[String], paramPos: Int): String = strFn(values.drop(paramPos).take(parameterTypes.length))
   
   override val nparams = parameterTypes.length
 }
