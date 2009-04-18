@@ -7,7 +7,7 @@ import pgep.GeneticOperators.Mutators._
 import pgep.Functions.BoolFunctions
 
 object BoolExample {
-  def run() {
+  def create() = {
     val random = RNGProvider()
     val boolType = classOf[Boolean]
     
@@ -61,12 +61,12 @@ object BoolExample {
                                   geneLinkingFunction, operators, constgen,
                                   constMutationProbability, nconsts, List(boolType))
     
-    val engine = Engine(config, popsize)
-    
-    engine.run()
+    Engine(config, popsize)
   }
   
   def main(args: Array[String]): Unit = {
-    run()
+    val engine = create()
+    
+    engine.run()
   }
 }

@@ -7,7 +7,7 @@ object Engine {
     val population = new Array[Genotype](populationSize)
     
     val consts = new HashMap[Class[_], AlphabetRW[Const]]
-    for ((typ, fn) <- params.constCreators)
+    for ((typ, fn) <- params.constgen)
       consts(typ) = new AlphabetRW[Const]((0 until params.nConstants).map (i => Const(Symbol("C" + i), typ, fn())): _*) 
 
     val gtParams = params.createGenotypeParameters(Map(consts.elements toList: _*))
@@ -78,7 +78,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
       while (random.nextDouble() < params.constantMutationProbability) {
         val i = random.nextInt(params.nConstants)
         val c = constants(typ)(i)
-        constants(typ)(i) = Const(c.name, c.typ, params.constCreators(typ)())
+        constants(typ)(i) = Const(c.name, c.typ, params.constgen(typ)())
       }
   }
   

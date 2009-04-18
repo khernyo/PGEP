@@ -2,7 +2,7 @@ package pgep
 
 object EngineParameters {
   def apply(ngenes: Int, headLen : Int, maxNrGenerations : Int, functions: Alphabet[Func], variables: Alphabet[Var],
-            tp: TermProbabilities, geneLinkingFunction: Func, operators : OperatorSet, constCreators : Map[Class[_], () => Any],
+            tp: TermProbabilities, geneLinkingFunction: Func, operators : OperatorSet, constgen : Map[Class[_], () => Any],
             constantMutationProbability : Double, nConstants : Int, geneResultTypes : List[Class[_]]) = {
     
     assert(ngenes > 0)
@@ -19,7 +19,7 @@ object EngineParameters {
     }
     val grt = if (geneResultTypes != null) geneResultTypes else geneLinkingFunction.parameterTypes
     
-    new EngineParameters(ngenes, hlen, tlen, maxNrGenerations, functions, variables, tp, geneLinkingFunction, operators, constCreators,
+    new EngineParameters(ngenes, hlen, tlen, maxNrGenerations, functions, variables, tp, geneLinkingFunction, operators, constgen,
                          constantMutationProbability, nConstants, grt)
   }
 }
@@ -33,7 +33,7 @@ class EngineParameters(ngenes: Int,
                        tp: TermProbabilities,
 					   geneLinkingFunction: Func,
 					   val operators: OperatorSet,
-					   val constCreators: Map[Class[_], () => Any],
+					   val constgen: Map[Class[_], () => Any],
 					   val constantMutationProbability: Double,
 					   val nConstants: Int,
 					   geneResultTypes: List[Class[_]]) {
