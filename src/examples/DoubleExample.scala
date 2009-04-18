@@ -68,14 +68,6 @@ object DoubleExample {
   }
   
   def main(args: Array[String]): Unit = {
-    val engine = create()
-    
-    engine.run(println(String.format("Generation: %5s\t\tbest fitness: %10.8s\t\tevaluationTime: %8.8s ms\tmutationTime: %8.8s ms",
-                                     engine.generation.toString,
-                                     engine.fittest.fitness.toString,
-                                     engine.avgEvalTime.toString,
-                                     engine.avgMutationTime.toString)),
-               println(engine.fittest.toExpressionString),
-               println(engine.fittest.toExpressionString))
+    Main.run(create())
   }
 }

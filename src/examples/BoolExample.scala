@@ -64,17 +64,6 @@ object BoolExample {
   }
   
   def main(args: Array[String]): Unit = {
-    val engine = create()
-    
-    val startTime = new java.util.Date
-    engine.run(println(String.format("Generation: %5s\t\tbest fitness: %10.5s\t\tevaluationTime: %8.8s ms\tmutationTime: %8.8s ms",
-                                     engine.generation.toString,
-                                     engine.fittest.fitness.toString,
-                                     engine.avgEvalTime.toString,
-                                     engine.avgMutationTime.toString)),
-               println(engine.fittest.toExpressionString),
-               println(engine.fittest.toExpressionString))
-    val endTime = new java.util.Date
-    println(endTime.getTime - startTime.getTime)
+    Main.run(create())
   }
 }
