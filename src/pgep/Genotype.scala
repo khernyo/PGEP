@@ -22,7 +22,7 @@ object Genotype {
     Gene.copySymbols(src.genes(geneStart), dst.genes(geneStart), symbolStart, symbolStart, (if (inOneGene) symbolEnd else srcGeneLen) - symbolStart)
     
     if (!inOneGene) {
-      for (i <- (geneStart + 1) to geneEnd)
+      for (i <- (geneStart + 1) until (geneEnd - 1))
         Gene.copySymbols(src.genes(i), dst.genes(i), 0, 0, srcGeneLen)
 
       Gene.copySymbols(src.genes(geneEnd - 1), dst.genes(geneEnd - 1), 0, 0, symbolEnd)

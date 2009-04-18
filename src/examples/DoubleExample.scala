@@ -4,25 +4,29 @@ import pgep._
 import pgep.GenotypeSelectors._
 import pgep.GeneticOperators.Reproducers._
 import pgep.GeneticOperators.Mutators._
-import pgep.Functions.BoolFunctions
+import pgep.Functions.DoubleFunctions
 
-object BoolExample {
+object DoubleExample {
   def create() = {
     val random = RNGProvider()
-    val boolType = classOf[Boolean]
+    val doubleType = classOf[Double]
     
-    val var_x = Array(false, true)
-    val var_y = Array(false, true)
-    val variables = new AlphabetRO(Var('x, boolType), Var('y, boolType))
-    val vcases = (for (x <- var_x; y <- var_y) yield Map('x -> x, 'y -> y)) toList
-    val expvals = for (vars <- vcases) yield List(vars('x) || vars('y))
+    val var_x = (-10 to 10) map (_.toDouble) toArray
+    val variables = new AlphabetRO(Var('x, doubleType))
+    val vcases = (for (x <- var_x) yield Map('x -> x)) toList
+    val expvals =
+      for (vars <- vcases;
+           x = vars('x))
+        yield List(x * x + 2 * x + 1)
     
-    val ngenes = 1
+    val ngenes = 3
     val headlen = 7
     val ngenerations = 500
     val nconsts = 100
     val popsize = 30
     val constantMutationProbability = 0.044
+    val constantMin = -10
+    val constantMax = 10
     val inversionProbability = 0.05
     val partialTranspositionProbability = 0.05
     val partialTransposonMaxLen = headlen / 4
@@ -31,16 +35,16 @@ object BoolExample {
     val tailMutationProbability = 0.044
     val constMutationProbability = 0.044
     val maxInvalidResults = 10
-    val geneLinkingFunction: Func = null
+    val geneLinkingFunction: Func = DoubleFunctions.add3
     val nelits = ((popsize * 0.3) max 2).toInt
     val nrandom = 5
     
-    val constgen: Map[Class[_], () => Any] = Map(boolType -> (() => if (random.nextDouble < 0.5) true else false))
+    val constgen: Map[Class[_], () => Any] = Map(doubleType -> (() => random.nextDouble * (constantMax - constantMin) + constantMin))
     
     val survivors = new Range(nelits, popsize / 2 - nelits)
     val newrandoms = new Range(popsize - nrandom, nrandom)
     
-    val fitnessFn: (Genotype) => Double = (_.meanSquaredError({case (expected: Boolean, actual: Boolean) => if (expected == actual) 0 else 1},
+    val fitnessFn: (Genotype) => Double = (_.meanSquaredError({case (expected: Double, actual: Double) => expected - actual},
                                         vcases, expvals, maxInvalidResults))
     
     val operators = OperatorSet(fitnessFn, new SogartarSemiEllipticSemiParabolic,
@@ -55,10 +59,10 @@ object BoolExample {
                                   new Randomized(newrandoms)))
     
     val config = EngineParameters(ngenes, headlen, ngenerations, 0.0,
-                                  new AlphabetRO[Func](BoolFunctions.and, BoolFunctions.or, BoolFunctions.not),
+                                  new AlphabetRO[Func](DoubleFunctions.add, DoubleFunctions.sub, DoubleFunctions.mul, DoubleFunctions.div),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
-                                  constMutationProbability, nconsts, List(boolType))
+                                  constMutationProbability, nconsts, null)
     
     Engine(config, popsize)
   }
@@ -67,7 +71,7 @@ object BoolExample {
     val engine = create()
     
     val startTime = new java.util.Date
-    engine.run(println(String.format("Generation: %5s\t\tbest fitness: %10.5s\t\tevaluationTime: %8.8s ms\tmutationTime: %8.8s ms",
+    engine.run(println(String.format("Generation: %5s\t\tbest fitness: %10.8s\t\tevaluationTime: %8.8s ms\tmutationTime: %8.8s ms",
                                      engine.generation.toString,
                                      engine.fittest.fitness.toString,
                                      engine.avgEvalTime.toString,
