@@ -1,6 +1,8 @@
 package pgep
 
 abstract class Alphabet[T <: Term](ts: T*) extends Seq[T] {
+  require(ts.length > 0)
+  
   protected val terms = ts.toArray
 
   protected def _maxParams = terms map (_.nparams) reduceLeft Math.max 
