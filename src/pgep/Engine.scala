@@ -8,7 +8,7 @@ object Engine {
     
     val consts = new HashMap[Class[_], AlphabetRW[Const]]
     for ((tpe, fn) <- params.constCreators)
-      consts(tpe) = new AlphabetRW[Const]((0 until params.nConstants).map (i => Const("C" + i, tpe, fn())): _*) 
+      consts(tpe) = new AlphabetRW[Const]((0 until params.nConstants).map (i => Const(Symbol("C" + i), tpe, fn())): _*) 
 
     val gtParams = params.createGenotypeParameters(consts)
     
