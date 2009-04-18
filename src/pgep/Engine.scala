@@ -64,12 +64,17 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
     totalMatingProbability = params.operators.mpf.setMatingProbability(population.toList)
   }
   
-  def run() {
+  def run(onNextGen: => Unit, onOptimalFound: => Unit, onMaxGenReached: => Unit) {
     calculateFitness()
-    if (fittest.fitness > 0 && generation < params.maxNrGenerations) {
+    onNextGen
+    if (fittest.fitness <= params.goodEnoughFitness)
+      onOptimalFound
+    if (generation >= params.maxNrGenerations)
+      onMaxGenReached
+    if (fittest.fitness > params.goodEnoughFitness && generation < params.maxNrGenerations) {
       generation += 1
       population = evolve(population)
-      run()
+      run(onNextGen, onOptimalFound, onMaxGenReached)
     }
   }
   

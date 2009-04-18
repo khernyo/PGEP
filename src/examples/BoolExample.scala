@@ -55,7 +55,7 @@ object BoolExample {
                                   new Randomized(newrandoms)
                                   ))
     
-    val config = EngineParameters(ngenes, headlen, ngenerations,
+    val config = EngineParameters(ngenes, headlen, ngenerations, 0.0,
                                   new AlphabetRO[Func](BoolFunctions.and, BoolFunctions.or, BoolFunctions.not),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
@@ -65,8 +65,11 @@ object BoolExample {
   }
   
   def main(args: Array[String]): Unit = {
+    RNGProvider.seed = 980122918
     val engine = create()
     
-    engine.run()
+    engine.run(println(format("Generation: %d\t\tbest fitness: %f", engine.generation, engine.fittest.fitness)),
+               println(engine.fittest.toExpressionString),
+               println(engine.fittest.toExpressionString))
   }
 }
