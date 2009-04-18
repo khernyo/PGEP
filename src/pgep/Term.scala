@@ -8,7 +8,7 @@ case class NextConst() extends Term
 
 case class ConstKind() extends Term
 case class Const(name: Symbol, typ: Class[_], value: Any) extends ConstKind {
-  def toExpressionString(): String = name + "[" + value + "]"
+  def toExpressionString(): String = name.name + "[" + value + "]"
   override def clone() = Const(name, typ, value)
 }
 

@@ -34,6 +34,16 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   def generation = _generation
   protected def generation_=(gen: Int) = _generation = gen
   
+  private var _evaluationTime: Long = 0
+  def evaluationTime = _evaluationTime
+  protected def evaluationTime_=(t: Long) = _evaluationTime = t
+  def avgEvalTime = evaluationTime.toDouble / (generation + 1)
+  
+  private var _mutationTime: Long = 0
+  def mutationTime = _mutationTime
+  protected def mutationTime_=(t: Long) = _mutationTime = t
+  def avgMutationTime = mutationTime.toDouble / generation
+  
   protected def evolve(gts: Array[Genotype]) = {
     val newGenotypes = (0 until population.length) map (_ => Genotype(gtParams)) toArray
     
@@ -57,15 +67,22 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
       gt.fitness = params.operators.fitnessFunction(gt)
     
     val invalid = (gt: Genotype) => gt.fitness.isNaN || gt.fitness.isInfinity
-    fittest = population.toList.remove(invalid).reduceLeft((_fittest, curr) => if (_fittest.fitness > curr.fitness) _fittest else curr)
+    fittest = population.toList.remove(invalid).reduceLeft((_fittest, curr) => if (_fittest.fitness < curr.fitness) _fittest else curr)
     
     fittest.cloneConsts()
     
     totalMatingProbability = params.operators.mpf.setMatingProbability(population.toList)
   }
   
+  protected def timeit(body: => Unit) = {
+    val startTime = scala.compat.Platform.currentTime
+    body
+    val endTime = scala.compat.Platform.currentTime
+    endTime - startTime
+  }
+  
   def run(onNextGen: => Unit, onOptimalFound: => Unit, onMaxGenReached: => Unit) {
-    calculateFitness()
+    evaluationTime += timeit { calculateFitness() }
     onNextGen
     if (fittest.fitness <= params.goodEnoughFitness)
       onOptimalFound
@@ -73,7 +90,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
       onMaxGenReached
     if (fittest.fitness > params.goodEnoughFitness && generation < params.maxNrGenerations) {
       generation += 1
-      population = evolve(population)
+      mutationTime += timeit { population = evolve(population) }
       run(onNextGen, onOptimalFound, onMaxGenReached)
     }
   }

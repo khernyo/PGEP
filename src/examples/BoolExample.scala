@@ -65,11 +65,17 @@ object BoolExample {
   }
   
   def main(args: Array[String]): Unit = {
-    RNGProvider.seed = 980122918
     val engine = create()
     
-    engine.run(println(format("Generation: %d\t\tbest fitness: %f", engine.generation, engine.fittest.fitness)),
+    val startTime = new java.util.Date
+    engine.run(println(String.format("Generation: %5s\t\tbest fitness: %10.5s\t\tevaluationTime: %8.8s ms\tmutationTime: %8.8s ms",
+                                     engine.generation.toString,
+                                     engine.fittest.fitness.toString,
+                                     engine.avgEvalTime.toString,
+                                     engine.avgMutationTime.toString)),
                println(engine.fittest.toExpressionString),
                println(engine.fittest.toExpressionString))
+    val endTime = new java.util.Date
+    println(endTime.getTime - startTime.getTime)
   }
 }
