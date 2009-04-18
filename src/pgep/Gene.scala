@@ -98,10 +98,16 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   
   protected def evalWalk(resultTypes: Array[Class[_]]) = new Iterator[Tuple3[Term, Int, Any]] {
     private val (lastParameterPos, lastIdx) = {
+      val nparams =
+        for (i <- 0 until parameters.headLen + parameters.tailLen)
+          yield (resultTypes(i) match {
+            case null => 0
+            case t: Class[_] => _k_expression(t)(i).nparams
+          })
       var sum = 0
-      val lastParameterPos = (0 until parameters.headLen + parameters.tailLen) map (i => {sum += _k_expression(resultTypes(i))(i).nparams; sum}) toArray
-      val lastIdx = lastParameterPos.zipWithIndex map {case (pos, i) => (pos == i)} indexOf (true)
-      (lastParameterPos, lastIdx)
+      val lastParamPos = nparams map {n => sum += n; sum} toArray
+      val lastIdx = lastParamPos.zipWithIndex map {case (pos, i) => (pos == i)} indexOf (true)
+      (lastParamPos, lastIdx)
     }
 
     private var i = lastIdx
