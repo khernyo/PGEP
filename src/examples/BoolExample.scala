@@ -64,4 +64,8 @@ object BoolExample {
     
     engine
   }
+  
+  def main(args: Array[String]): Unit = {
+    run()
+  }
 }
