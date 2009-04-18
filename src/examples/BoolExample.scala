@@ -4,6 +4,7 @@ import pgep._
 import pgep.GenotypeSelectors._
 import pgep.GeneticOperators.Reproducers._
 import pgep.GeneticOperators.Mutators._
+import pgep.Functions.BoolFunctions
 
 object BoolExample {
   def run() {
@@ -55,14 +56,14 @@ object BoolExample {
                                   ))
     
     val config = EngineParameters(ngenes, headlen, ngenerations,
-                                  new AlphabetRO[Func](),
+                                  new AlphabetRO[Func](BoolFunctions.and, BoolFunctions.or, BoolFunctions.not),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
                                   constMutationProbability, nconsts, List(boolType))
     
     val engine = Engine(config, popsize)
     
-    engine
+    engine.run()
   }
   
   def main(args: Array[String]): Unit = {

@@ -14,7 +14,7 @@ object GeneParameters {
     for (t <- types) {
       if (!gp.functions.exists(_.resultType == t) ||
           !gp.variables.exists(_.typ == t) ||
-          !gp.constants.exists(_ == t))
+          !gp.constants.keys.exists(_ == t))
         throw new IllegalArgumentException("Not all types are covered by Alphabets!");
     }  
   }
