@@ -66,7 +66,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   
   def run() {
     calculateFitness()
-    if (fittest.fitness < 0 && generation < params.maxNrGenerations) {
+    if (fittest.fitness > 0 && generation < params.maxNrGenerations) {
       generation += 1
       population = evolve(population)
       run()
