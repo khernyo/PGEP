@@ -3,10 +3,10 @@ package pgep.GeneticOperators.Reproducers
 class OnePointCrossover(selection: GenotypeSelector) extends Reproducer(2, 1, selection) {
   def this() = this(null)
   
-  protected[Reproducers] override def apply(src: Array[Genotype], selectionIndices: List[Int], dst: Array[Genotype], dstIdx: Int) = {
+  protected[Reproducers] override def apply(selected: List[Genotype], dst: Array[Genotype], dstIdx: Int) = {
     val (src1Idx, src2Idx) = if (random.nextInt(2) == 0) (0, 1) else (1, 0)
-    val src1 = src(selectionIndices(src1Idx))
-    val src2 = src(selectionIndices(src2Idx))
+    val src1 = selected(src1Idx)
+    val src2 = selected(src2Idx)
     
     val geneLen = src1.gp.geneLen
     val nrGenes = src1.gp.nrGenes

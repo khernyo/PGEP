@@ -4,7 +4,7 @@ abstract class Mutator(selection: GenotypeSelector) extends GeneticOperator(1, 1
   def apply(genotypes: Array[Genotype]) {
     for (sel <- selection.select(genotypes)) {
 	  assert(sel.length == 1)
-	  apply(genotypes(sel.head))
+	  apply(sel.head)
 	}
   }
   
