@@ -12,7 +12,7 @@ object DoubleExample {
     val doubleType = classOf[Double]
     
     val var_x = (-10 to 10) map (_.toDouble) toArray
-    val variables = new AlphabetRO(Var('x, doubleType))
+    val variables = List(Var('x, doubleType))
     val vcases = (for (x <- var_x) yield Map('x -> x)) toList
     val expvals =
       for (vars <- vcases;
@@ -60,7 +60,7 @@ object DoubleExample {
                                   new Inversion(inversionProbability, inversionMaxLen, mutationrange)))
     
     val config = EngineParameters(popsize, ngenes, headlen, ngenerations, 0.0,
-                                  new AlphabetRO[Func](DoubleFunctions.add, DoubleFunctions.sub, DoubleFunctions.mul, DoubleFunctions.div),
+                                  List(DoubleFunctions.add, DoubleFunctions.sub, DoubleFunctions.mul, DoubleFunctions.div),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
                                   constMutationProbability, nconsts, null)

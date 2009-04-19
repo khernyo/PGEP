@@ -1,18 +1,14 @@
 package pgep
 
 import scala.collection.Map
-import scala.collection.mutable.{HashMap,HashSet}
+import scala.collection.mutable.HashMap
 
 object Gene {
   def apply(parameters: GeneParameters) = {
     val k_expr = new HashMap[Class[_], Array[Term]]
     val consts = new HashMap[Class[_], Array[Const]]
     
-    val types = new HashSet[Class[_]]
-    types ++= parameters.functions map (_.resultType)
-    types ++= parameters.variables map (_.typ)
-    types ++= parameters.constants.keys
-    
+    val types = Set.empty ++ (parameters.functions.keys ++ parameters.variables.keys ++ parameters.constants.keys)
     types foreach { t =>
       k_expr(t) = new Array(parameters.headLen + parameters.tailLen)
       consts(t) = new Array(parameters.tailLen)
@@ -69,8 +65,8 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   				headp: () => Boolean, tailp: () => Boolean, constp: () => Boolean) {
     for (typ <- _k_expression.keys) {
       val k_expr = _k_expression(typ)
-      val functions = parameters.functions filter (_.resultType == typ)
-      val variables = parameters.variables filter (_.typ == typ)
+      val functions = parameters.functions(typ)
+      val variables = parameters.variables(typ)
       val constants = parameters.constants(typ)
       
       for (i <- 0 until parameters.headLen)

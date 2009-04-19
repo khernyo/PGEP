@@ -13,7 +13,7 @@ object BoolExample {
     
     val var_x = Array(false, true)
     val var_y = Array(false, true)
-    val variables = new AlphabetRO(Var('x, boolType), Var('y, boolType))
+    val variables = List(Var('x, boolType), Var('y, boolType))
     val vcases = (for (x <- var_x; y <- var_y) yield Map('x -> x, 'y -> y)) toList
     val expvals = for (vars <- vcases) yield List(vars('x) || vars('y))
     
@@ -56,7 +56,7 @@ object BoolExample {
                                   new Inversion(inversionProbability, inversionMaxLen, mutationrange)))
     
     val config = EngineParameters(popsize, ngenes, headlen, ngenerations, 0.0,
-                                  new AlphabetRO[Func](BoolFunctions.and, BoolFunctions.or, BoolFunctions.not),
+                                  List(BoolFunctions.and, BoolFunctions.or, BoolFunctions.not),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
                                   constMutationProbability, nconsts, List(boolType))

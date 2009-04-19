@@ -5,7 +5,7 @@ import pgep.GeneticOperators.Reproducers.CreateRandom
 
 object EngineParameters {
   def apply(popsize:Int, ngenes: Int, headLen : Int, maxNrGenerations : Int, goodEnoughFitness: Double,
-            functions: Alphabet[Func], variables: Alphabet[Var], tp: TermProbabilities,
+            functions: List[Func], variables: List[Var], tp: TermProbabilities,
             geneLinkingFunction: Func, ops : OperatorSet, constgen : Map[Class[_], () => Any],
             constantMutationProbability : Double, nConstants : Int, geneResultTypes : List[Class[_]]) = {
     
@@ -14,8 +14,13 @@ object EngineParameters {
     require(geneLinkingFunction == null || ngenes == geneLinkingFunction.nparams)
     require(geneResultTypes == null || geneResultTypes.length == ngenes)
     
+    val functypes = Set.empty ++ (functions map (_.resultType))
+    val funcMap: Map[Class[_], Alphabet[Func]] = Map(functypes.map(t => (t, new AlphabetRO(functions filter (_.resultType == t): _*))).toList: _*)
+    val vartypes = Set.empty ++ (variables.map(_.typ))
+    val varMap: Map[Class[_], Alphabet[Var]] = Map(vartypes.map(t => (t, new AlphabetRO(variables filter (_.typ == t): _*))).toList: _*)
+    
     var hlen = headLen
-    var tlen = hlen * (functions.maxParams - 1) + 1
+    var tlen = hlen * (Iterable.max(funcMap.values.map(_.maxParams).toList) - 1) + 1
     if (functions.isEmpty) {
       tlen += hlen
       hlen = 0
@@ -27,7 +32,7 @@ object EngineParameters {
     val consts = new HashMap[Class[_], AlphabetRW[Const]]
     for ((typ, fn) <- constgen)
       consts(typ) = new AlphabetRW[Const]((0 until nConstants).map (i => Const(Symbol("C" + i), typ, fn())): _*)
-    val gtparams = GenotypeParameters(ngenes, hlen, tlen, geneLinkingFunction, grt, functions, variables, Map(consts.elements toList: _*), tp)
+    val gtparams = GenotypeParameters(ngenes, hlen, tlen, geneLinkingFunction, grt, funcMap, varMap, Map(consts.elements toList: _*), tp)
     
     val nrep = ops.reproducers map (_.nchildren) reduceLeft (_ + _)
     require(nrep <= popsize)

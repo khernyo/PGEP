@@ -5,7 +5,7 @@ import scala.collection.Map
 object GenotypeParameters {
   
   def apply(nrGenes: Int, headLen: Int, tailLen: Int, geneLinkingFunction: Func, geneResultTypes: List[Class[_]],
-		   functions: Alphabet[Func], variables: Alphabet[Var], constants: Map[Class[_], Alphabet[Const]],
+		   functions: Map[Class[_], Alphabet[Func]], variables: Map[Class[_], Alphabet[Var]], constants: Map[Class[_], Alphabet[Const]],
 		   tp: TermProbabilities) = {
     val selector_fvc = new ExactSelector[Term](List(tp.functionProbabilities, tp.variableProbabilities, tp.constantProbabilities),
     						  List(FuncKind(), VarKind(), ConstKind()))
