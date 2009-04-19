@@ -5,9 +5,9 @@ abstract class MatingProbabilityFunction {
   
   protected def calculateMatingProbability(min: Double, max: Double, median: Double, fitness: Double): Double
   
-  def setMatingProbability(genotypes: List[Genotype]) = {
+  def setMatingProbability(genotypes: Seq[Genotype]) = {
     val valid = (d: Double) => !(d.isNaN || d.isInfinity)
-    val sorted = genotypes map (_.fitness) filter valid sort (_ < _)
+    val sorted = genotypes.map(_.fitness).filter(valid).toList.sort(_ < _)
     
     val min = sorted.head
     val max = sorted.last

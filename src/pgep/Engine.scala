@@ -55,7 +55,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype]) {
     
     fittest.cloneConsts()
     
-    totalMatingProbability = params.operators.mpf.setMatingProbability(population.toList)
+    totalMatingProbability = params.operators.mpf.setMatingProbability(population)
   }
   
   protected def timeit(body: => Unit) = {
