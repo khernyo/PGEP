@@ -10,7 +10,7 @@ abstract class ProbabilityBasedSelector[T] extends Selector[T] {
   protected def constructorPreconditions(probabilities: Seq[Double], values: Seq[T], scale: Double) {
     assert(probabilities != null)
     assert(values != null)
-    assert(probabilities.length > 0)
+    assert(!probabilities.isEmpty)
     assert(probabilities.length == values.length)
     assert(scale > 0)
     assert(probabilities forall (_ >= 0))
