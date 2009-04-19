@@ -69,8 +69,8 @@ class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]],
   				headp: () => Boolean, tailp: () => Boolean, constp: () => Boolean) {
     for (typ <- _k_expression.keys) {
       val k_expr = _k_expression(typ)
-      val functions = parameters.functions filter (_.resultType == typ) toArray
-      val variables = parameters.variables filter (_.typ == typ) toArray
+      val functions = parameters.functions filter (_.resultType == typ)
+      val variables = parameters.variables filter (_.typ == typ)
       val constants = parameters.constants(typ)
       
       for (i <- 0 until parameters.headLen)
