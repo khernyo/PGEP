@@ -32,7 +32,7 @@ object BoolExample {
     val constMutationProbability = 0.044
     val maxInvalidResults = 10
     val geneLinkingFunction: Func = null
-    val nelits = ((popsize * 0.3) max 2).toInt
+    val nelits = (popsize * 0.3).toInt max 2
     val nrandom = 5
     
     val constgen: Map[Class[_], () => Any] = Map(boolType -> (() => if (random.nextDouble < 0.5) true else false))

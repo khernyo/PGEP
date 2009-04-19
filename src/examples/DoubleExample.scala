@@ -36,7 +36,7 @@ object DoubleExample {
     val constMutationProbability = 0.044
     val maxInvalidResults = 10
     val geneLinkingFunction: Func = DoubleFunctions.add3
-    val nelits = ((popsize * 0.3) max 2).toInt
+    val nelits = (popsize * 0.3).toInt max 2
     val nrandom = 5
     
     val constgen: Map[Class[_], () => Any] = Map(doubleType -> (() => random.nextDouble * (constantMax - constantMin) + constantMin))
