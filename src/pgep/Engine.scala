@@ -3,8 +3,8 @@ package pgep
 import scala.collection.mutable.HashMap
 
 object Engine {
-  def apply(params: EngineParameters, populationSize: Int) = {
-    val population = new Array[Genotype](populationSize)
+  def apply(params: EngineParameters) = {
+    val population = new Array[Genotype](params.popsize)
     
     val consts = new HashMap[Class[_], AlphabetRW[Const]]
     for ((typ, fn) <- params.constgen)

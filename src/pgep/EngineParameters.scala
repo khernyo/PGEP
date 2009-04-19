@@ -1,14 +1,15 @@
 package pgep
 
 object EngineParameters {
-  def apply(ngenes: Int, headLen : Int, maxNrGenerations : Int, goodEnoughFitness: Double, functions: Alphabet[Func], variables: Alphabet[Var],
-            tp: TermProbabilities, geneLinkingFunction: Func, operators : OperatorSet, constgen : Map[Class[_], () => Any],
+  def apply(popsize:Int, ngenes: Int, headLen : Int, maxNrGenerations : Int, goodEnoughFitness: Double,
+            functions: Alphabet[Func], variables: Alphabet[Var], tp: TermProbabilities,
+            geneLinkingFunction: Func, operators : OperatorSet, constgen : Map[Class[_], () => Any],
             constantMutationProbability : Double, nConstants : Int, geneResultTypes : List[Class[_]]) = {
     
-    assert(ngenes > 0)
-    assert((geneLinkingFunction == null) != (geneResultTypes == null))
-    assert(geneLinkingFunction == null || ngenes == geneLinkingFunction.nparams)
-    assert(geneResultTypes == null || geneResultTypes.length == ngenes)
+    require(ngenes > 0)
+    require((geneLinkingFunction == null) != (geneResultTypes == null))
+    require(geneLinkingFunction == null || ngenes == geneLinkingFunction.nparams)
+    require(geneResultTypes == null || geneResultTypes.length == ngenes)
     
     var hlen = headLen
     var tlen = hlen * (functions.maxParams - 1) + 1
@@ -19,12 +20,13 @@ object EngineParameters {
     }
     val grt = if (geneResultTypes != null) geneResultTypes else geneLinkingFunction.parameterTypes
     
-    new EngineParameters(ngenes, hlen, tlen, maxNrGenerations, goodEnoughFitness,functions, variables, tp, geneLinkingFunction, operators, constgen,
-                         constantMutationProbability, nConstants, grt)
+    new EngineParameters(popsize, ngenes, hlen, tlen, maxNrGenerations, goodEnoughFitness,functions, variables, tp,
+                         geneLinkingFunction, operators, constgen, constantMutationProbability, nConstants, grt)
   }
 }
 
-class EngineParameters(ngenes: Int,
+class EngineParameters(val popsize:Int,
+                       ngenes: Int,
                        headLen: Int,
                        tailLen: Int,
                        val maxNrGenerations: Int,

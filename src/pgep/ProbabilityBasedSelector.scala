@@ -12,7 +12,6 @@ abstract class ProbabilityBasedSelector[T] extends Selector[T] {
     assert(values != null)
     assert(!probabilities.isEmpty)
     assert(probabilities.length == values.length)
-    assert(scale > 0)
     assert(probabilities forall (_ >= 0))
     assert(probabilities.reduceLeft(_ + _) == scale)
   }
@@ -23,8 +22,9 @@ class ExactSelector[T](probabilities: Seq[Double], val values: Seq[T], scale: Do
 
   protected val probabilityDistribution = {
     constructorPreconditions(probabilities, values, scale)
+    val s = if (scale == 0.0) 1.0 else scale
     var sum: Double = 0
-    val pdist = probabilities map (p => {sum += p / scale; sum})
+    val pdist = probabilities map (p => {sum += p / s; sum})
     constructorPostconditions(probabilities, pdist)
     pdist
   }
@@ -34,14 +34,14 @@ class ExactSelector[T](probabilities: Seq[Double], val values: Seq[T], scale: Do
     assert(pdist forall (d => d <= 1.00000000001 && d >= -0.00000000001))
     val pdistl = pdist.toList
     assert((pdistl zip pdistl.tail) forall {case (d1, d2) => d1 <= d2})
-    assert(Math.abs(pdist.last - 1) < 0.00000000001)
+    assert(Math.abs(pdist.last - 1) < 0.00000000001 || pdist.last == 0.0)
   }
   
   override def apply() = {
-    var rnd = random.nextDouble
+    val rnd = random.nextDouble
     val idx = probabilityDistribution map (rnd < _) indexOf true
-    assert(idx >= 0)
-    values(idx)
+    if (idx < 0) values((rnd * values.length).toInt)
+    else values(idx)
   }
 }
 

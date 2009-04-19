@@ -36,35 +36,36 @@ object DoubleExample {
     val constMutationProbability = 0.044
     val maxInvalidResults = 10
     val geneLinkingFunction: Func = DoubleFunctions.add3
-    val nelits = (popsize * 0.3).toInt max 2
+    
+    val nelits = 2
+    val nmutatedelits = (popsize * 0.1).toInt
+    val nsurvivor = (popsize * 0.7).toInt - nmutatedelits
     val nrandom = 5
+    val mutationrange = new Range(nelits, nmutatedelits + nsurvivor)
     
     val constgen: Map[Class[_], () => Any] = Map(doubleType -> (() => random.nextDouble * (constantMax - constantMin) + constantMin))
-    
-    val survivors = new Range(nelits, popsize / 2 - nelits)
-    val newrandoms = new Range(popsize - nrandom, nrandom)
     
     val fitnessFn: (Genotype) => Double = (_.meanSquaredError({case (expected: Double, actual: Double) => expected - actual},
                                         vcases, expvals, maxInvalidResults))
     
     val operators = OperatorSet(fitnessFn, new SogartarSemiEllipticSemiParabolic,
                                 List(
-                                  new Elitism(nelits, new Fittest(nelits)),
-                                  new ReproductionGroup(new WeightedProbability(2, popsize / 2 - nelits),
+                                  new Clone(nelits, new Fittest(nelits)),
+                                  new Clone(nmutatedelits, new Fittest(nmutatedelits)),
+                                  new ReproductionGroup(new WeightedProbability(2, nsurvivor),
                                                         List(0.5, 0.5),
                                                         List(new OnePointCrossover, new TwoPointCrossover)),
-                                  new Mutation(headMutationProbability, tailMutationProbability, constMutationProbability, survivors),
-                                  new PartialTransposition(partialTranspositionProbability, partialTransposonMaxLen, survivors),
-                                  new Inversion(inversionProbability, inversionMaxLen, survivors),
-                                  new Randomized(newrandoms)))
+                                  new Mutation(headMutationProbability, tailMutationProbability, constMutationProbability, mutationrange),
+                                  new PartialTransposition(partialTranspositionProbability, partialTransposonMaxLen, mutationrange),
+                                  new Inversion(inversionProbability, inversionMaxLen, mutationrange)))
     
-    val config = EngineParameters(ngenes, headlen, ngenerations, 0.0,
+    val config = EngineParameters(popsize, ngenes, headlen, ngenerations, 0.0,
                                   new AlphabetRO[Func](DoubleFunctions.add, DoubleFunctions.sub, DoubleFunctions.mul, DoubleFunctions.div),
                                   variables, TermProbabilities(0.5, 0.25, 0.25),
                                   geneLinkingFunction, operators, constgen,
                                   constMutationProbability, nconsts, null)
     
-    Engine(config, popsize)
+    Engine(config)
   }
   
   def main(args: Array[String]): Unit = {
