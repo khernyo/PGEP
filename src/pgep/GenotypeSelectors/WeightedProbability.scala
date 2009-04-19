@@ -5,7 +5,7 @@ class WeightedProbability(nOpParams: Int, nSelections: Int) extends GenotypeSele
   protected val random = RNGProvider()
   
   override def select(genotypes: Array[Genotype]): List[List[Int]] = {
-    val selector = new ExactSelector(genotypes map (_.matingProbability), 0 until genotypes.length)
+    val selector = new ExactSelector(genotypes map (_.matingProbability), genotypes.indices)
     (0 until nSelections) map (_ => (0 until nOpParams) map (_ => selector()) toList) toList
   }
 }

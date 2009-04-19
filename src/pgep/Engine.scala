@@ -105,7 +105,7 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   }
   
   protected def randomize() {
-    for (i <- (0 until population.length)) {
+    for (i <- population.indices) {
       population(i) = Genotype(gtParams)
       population(i).randomize()
     }
