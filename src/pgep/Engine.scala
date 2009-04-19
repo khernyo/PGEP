@@ -1,25 +1,16 @@
 package pgep
 
-import scala.collection.mutable.HashMap
-
 object Engine {
   def apply(params: EngineParameters) = {
     val population = new Array[Genotype](params.popsize)
-    
-    val consts = new HashMap[Class[_], AlphabetRW[Const]]
-    for ((typ, fn) <- params.constgen)
-      consts(typ) = new AlphabetRW[Const]((0 until params.nConstants).map (i => Const(Symbol("C" + i), typ, fn())): _*) 
-
-    val gtParams = params.createGenotypeParameters(Map(consts.elements toList: _*))
-    
-    val engine = new Engine(params, population, consts, gtParams)
+    val engine = new Engine(params, population)
     engine.randomize()
     
     engine
   }
 }
 
-class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[Class[_], AlphabetRW[Const]], gtParams: GenotypeParameters) {
+class Engine(params: EngineParameters, pop: Array[Genotype]) {
   protected val random = RNGProvider()
   
   protected var population = pop
@@ -45,21 +36,14 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   def avgMutationTime = mutationTime.toDouble / generation
   
   protected def evolve(gts: Array[Genotype]) = {
-    val newGenotypes = (0 until population.length) map (_ => Genotype(gtParams)) toArray
-    
-    var dstIdx = 0
-    for (rep <- params.operators.reproducers)
-      dstIdx = rep(gts, newGenotypes, dstIdx)
-    
-    for (i <- (dstIdx until newGenotypes.length))
-      newGenotypes(i).randomize()
+    val newpop = params.operators.reproducers flatMap {rep => rep(gts)} toArray
     
     for (mod <- params.operators.modifiers)
-      mod(newGenotypes)
+      mod(newpop)
     
     mutateConsts()
     
-    newGenotypes
+    newpop
   }
   
   protected def calculateFitness() {
@@ -104,17 +88,17 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   }
   
   protected def mutateConsts() {
-    for (typ <- constants.keys)
+    for (typ <- params.constants.keys)
       while (random.nextDouble() < params.constantMutationProbability) {
         val i = random.nextInt(params.nConstants)
-        val c = constants(typ)(i)
-        constants(typ)(i) = Const(c.name, c.typ, params.constgen(typ)())
+        val c = params.constants(typ)(i)
+        params.constants(typ)(i) = Const(c.name, c.typ, params.constgen(typ)())
       }
   }
   
   protected def randomize() {
     for (i <- population.indices) {
-      population(i) = Genotype(gtParams)
+      population(i) = Genotype(params.gtparams)
       population(i).randomize()
     }
   }

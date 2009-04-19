@@ -3,7 +3,7 @@ package pgep.GeneticOperators.Reproducers
 class TwoPointCrossover(selection: GenotypeSelector) extends Reproducer(2, 1, selection) {
   def this() = this(null)
   
-  protected[Reproducers] override def apply(selected: List[Genotype], dst: Array[Genotype], dstIdx: Int) = {
+  protected[Reproducers] override def apply(selected: List[Genotype]) = {
     val (src1Idx, src2Idx) = if (random.nextInt(2) == 0) (0, 1) else (1, 0)
     val src1 = selected(src1Idx)
     val src2 = selected(src2Idx)
@@ -25,7 +25,6 @@ class TwoPointCrossover(selection: GenotypeSelector) extends Reproducer(2, 1, se
     Genotype.copyLinearStructure(src2, child, genePos1, symbolPos1, genePos2 + 1, symbolPos2 + 1)
     Genotype.copyLinearStructure(src1, child, genePos2, symbolPos2, nrGenes, geneLen)
     
-    dst(dstIdx) = child
-    dstIdx + 1
+    List(child)
   }
 }
