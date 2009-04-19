@@ -82,16 +82,24 @@ class Engine(params: EngineParameters, pop: Array[Genotype], constants: HashMap[
   }
   
   def run(onNextGen: => Unit, onOptimalFound: => Unit, onMaxGenReached: => Unit) {
-    evaluationTime += timeit { calculateFitness() }
-    onNextGen
-    if (fittest.fitness <= params.goodEnoughFitness)
-      onOptimalFound
-    if (generation >= params.maxNrGenerations)
-      onMaxGenReached
-    if (fittest.fitness > params.goodEnoughFitness && generation < params.maxNrGenerations) {
-      generation += 1
-      mutationTime += timeit { population = evolve(population) }
-      run(onNextGen, onOptimalFound, onMaxGenReached)
+    var stop = false
+    
+    while (!stop) {
+      evaluationTime += timeit { calculateFitness() }
+	  onNextGen
+   
+	  if (fittest.fitness <= params.goodEnoughFitness) {
+	    onOptimalFound
+	    stop = true
+	  } else if (generation >= params.maxNrGenerations) {
+	    onMaxGenReached
+        stop = true
+      }
+   
+	  if (fittest.fitness > params.goodEnoughFitness && generation < params.maxNrGenerations) {
+	    generation += 1
+	    mutationTime += timeit { population = evolve(population) }
+	  }
     }
   }
   
