@@ -16,7 +16,7 @@ object EngineParameters {
     
     var hlen = headLen
     var tlen = hlen * (functions.maxParams - 1) + 1
-    if (functions.length == 0) {
+    if (functions.isEmpty) {
       tlen += hlen
       hlen = 0
       assert(tlen == 1)
