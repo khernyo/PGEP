@@ -69,16 +69,17 @@ class Genotype(val gp: GenotypeParameters,
                         maxInvalidResults: Int) = {
     val sum: (List[Double]) => Double = _.reduceLeft (_ + _)
     val sumOfErrorSquares = (expected: List[Any], actual: List[Any]) => sum(List.map2(expected, actual)(errorFn).map(x => x * x))
-    val invalid = (x: Double) => x.isNaN || x.isInfinity
+    val isInvalid = (x: Double) => x.isNaN || x.isInfinity
     
     val results = variableCases map (this(_))
     val ses = List.map2(expectedValues, results)(sumOfErrorSquares)
-    val nrInvalid = ses filter invalid length;
+    val (invalid, valid) = ses partition isInvalid
+    val nrInvalid = invalid length;
     
     if (nrInvalid > maxInvalidResults)
       Double.MaxValue
     else
-      (ses remove invalid reduceLeft (_ + _)) / (variableCases.length - nrInvalid)
+      (valid reduceLeft (_ + _)) / (variableCases.length - nrInvalid)
   }
   
   def cloneConsts() {
