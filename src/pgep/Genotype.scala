@@ -67,12 +67,12 @@ class Genotype(val gp: GenotypeParameters,
   
   def meanSquaredError(errorFn: (Any, Any) => Double, variableCases: List[Map[Symbol, Any]], expectedValues: List[List[Any]],
                         maxInvalidResults: Int) = {
-    val errFn = Function.tupled(errorFn)
-    val sumOfErrorSquares = (expected: List[Any], actual: List[Any]) => (expected zip actual) map errFn map (x => x * x) reduceLeft (_ + _)
+    val sum: (List[Double]) => Double = _.reduceLeft (_ + _)
+    val sumOfErrorSquares = (expected: List[Any], actual: List[Any]) => sum(List.map2(expected, actual)(errorFn).map(x => x * x))
     val invalid = (x: Double) => x.isNaN || x.isInfinity
     
     val results = variableCases map (this(_))
-    val ses = (expectedValues zip results) map Function.tupled(sumOfErrorSquares)
+    val ses = List.map2(expectedValues, results)(sumOfErrorSquares)
     val nrInvalid = ses filter invalid length;
     
     if (nrInvalid > maxInvalidResults)
