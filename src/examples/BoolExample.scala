@@ -44,7 +44,7 @@ object BoolExample {
     val fitnessFn: (Genotype) => Double = (_.meanSquaredError({case (expected: Boolean, actual: Boolean) => if (expected == actual) 0 else 1},
                                         vcases, expvals, maxInvalidResults))
     
-    val operators = OperatorSet(fitnessFn, new SogartarSemiEllipticSemiParabolic,
+    val operators = OperatorSet(fitnessFn, SemiEllipticSemiParabolic,
                                 List(
                                   new Clone(nelits, new Fittest(nelits)),
                                   new Clone(nmutatedelits, new Fittest(nmutatedelits)),

@@ -48,7 +48,7 @@ object DoubleExample {
     val fitnessFn: (Genotype) => Double = (_.meanSquaredError({case (expected: Double, actual: Double) => expected - actual},
                                         vcases, expvals, maxInvalidResults))
     
-    val operators = OperatorSet(fitnessFn, new SogartarSemiEllipticSemiParabolic,
+    val operators = OperatorSet(fitnessFn, SemiEllipticSemiParabolic,
                                 List(
                                   new Clone(nelits, new Fittest(nelits)),
                                   new Clone(nmutatedelits, new Fittest(nmutatedelits)),
