@@ -1,5 +1,7 @@
 package pgep
 
+import List.map2
+
 object Genotype {
   def apply(gp: GenotypeParameters) = {
     val genes = (0 until gp.nrGenes) map (i => Gene(gp.geneParameters(i))) toArray;    
@@ -28,16 +30,19 @@ object Genotype {
       Gene.copySymbols(src.genes(geneEnd - 1), dst.genes(geneEnd - 1), 0, 0, symbolEnd)
     }
   }
+  
+  private[this] final val isInvalid = (x: Double) => x.isNaN || x.isInfinity
 }
 
 class Genotype(val gp: GenotypeParameters,
                val genes: Array[Gene]) {
+  import Genotype.isInvalid  
   
   private var _matingProbability: Double = _
   def matingProbability = _matingProbability
   def matingProbability_=(p: Double) = {
-    assert(p >= -0.00000000001 || p.isNaN || p.isInfinity)
-    _matingProbability = if (p < 0 || p.isNaN || p.isInfinity) 0 else p
+    assert(p >= -0.00000000001 || isInvalid(p))
+    _matingProbability = if (p < 0 || isInvalid(p)) 0 else p
   }
   
   private var _fitness: Double = _
@@ -67,19 +72,18 @@ class Genotype(val gp: GenotypeParameters,
   
   def meanSquaredError(errorFn: (Any, Any) => Double, variableCases: List[Map[Symbol, Any]], expectedValues: List[List[Any]],
                         maxInvalidResults: Int) = {
-    val sum: (List[Double]) => Double = _.reduceLeft (_ + _)
-    val sumOfErrorSquares = (expected: List[Any], actual: List[Any]) => sum(List.map2(expected, actual)(errorFn).map(x => x * x))
-    val isInvalid = (x: Double) => x.isNaN || x.isInfinity
+    val sum = (l: List[Double]) => l.reduceLeft (_ + _)
+    val sumOfSquaredError = (expected: List[Any], actual: List[Any]) => sum(map2(expected, actual)(errorFn).map(x => x * x))
     
     val results = variableCases map (this(_))
-    val ses = List.map2(expectedValues, results)(sumOfErrorSquares)
-    val (invalid, valid) = ses partition isInvalid
+    val sse = map2(expectedValues, results)(sumOfSquaredError)
+    val (invalid, valid) = sse partition isInvalid
     val nrInvalid = invalid length;
     
     if (nrInvalid > maxInvalidResults)
       Double.MaxValue
     else
-      (valid reduceLeft (_ + _)) / (variableCases.length - nrInvalid)
+      sum(valid) / valid.length
   }
   
   def cloneConsts() {
