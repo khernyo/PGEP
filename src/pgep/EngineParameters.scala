@@ -37,20 +37,19 @@ object EngineParameters {
     val nrep = ops.reproducers map (_.nchildren) reduceLeft (_ + _)
     require(nrep <= popsize)
     val operators = if (nrep == popsize) ops
-    				else new OperatorSet(ops.fitnessFunction, ops.mpf,
-                             			 ops.reproducers ++ List(new CreateRandom(gtparams, popsize - nrep)),
-                             			 ops.modifiers)
+    				else OperatorSet(ops.fitnessFunction, ops.mpf,
+    								 ops.reproducers ++ List(new CreateRandom(gtparams, popsize - nrep)) ++ ops.modifiers)
     
     new EngineParameters(popsize, gtparams, maxNrGenerations, goodEnoughFitness, consts, operators, constgen, constantMutationProbability, nConstants)
   }
 }
 
-class EngineParameters(val popsize:Int,
-                       val gtparams: GenotypeParameters,
-                       val maxNrGenerations: Int,
-                       val goodEnoughFitness: Double,
-                       val constants: HashMap[Class[_], AlphabetRW[Const]],
-					   val operators: OperatorSet,
-					   val constgen: Map[Class[_], () => Any],
-					   val constantMutationProbability: Double,
-					   val nConstants: Int)
+class EngineParameters private (val popsize:Int,
+                                val gtparams: GenotypeParameters,
+                                val maxNrGenerations: Int,
+                                val goodEnoughFitness: Double,
+                                val constants: HashMap[Class[_], AlphabetRW[Const]],
+                                val operators: OperatorSet,
+                                val constgen: Map[Class[_], () => Any],
+                                val constantMutationProbability: Double,
+                                val nConstants: Int)

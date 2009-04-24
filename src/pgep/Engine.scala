@@ -10,7 +10,7 @@ object Engine {
   }
 }
 
-class Engine(params: EngineParameters, pop: Array[Genotype]) {
+class Engine private (params: EngineParameters, pop: Array[Genotype]) {
   protected val random = RNGProvider()
   
   protected var population = pop

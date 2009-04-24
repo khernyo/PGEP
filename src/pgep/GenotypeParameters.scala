@@ -17,11 +17,11 @@ object GenotypeParameters {
   }
 }
 
-class GenotypeParameters(val nrGenes: Int,
-                         val geneLinkingFunction: Func,
-                         val selector_fvc: Selector[Term],
-                         val selector_vc: Selector[Term],
-						 val geneParameters: Seq[GeneParameters]) {
+class GenotypeParameters private (val nrGenes: Int,
+                                  val geneLinkingFunction: Func,
+                                  val selector_fvc: Selector[Term],
+                                  val selector_vc: Selector[Term],
+                                  val geneParameters: Seq[GeneParameters]) {
   
   def geneLen = geneParameters(0).geneLen
   def headLen = geneParameters(0).headLen

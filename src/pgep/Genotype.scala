@@ -34,8 +34,8 @@ object Genotype {
   private[this] final val isInvalid = (x: Double) => x.isNaN || x.isInfinity
 }
 
-class Genotype(val gp: GenotypeParameters,
-               val genes: Array[Gene]) {
+class Genotype private (val gp: GenotypeParameters,
+                        val genes: Array[Gene]) {
   import Genotype.isInvalid  
   
   private var _matingProbability: Double = _

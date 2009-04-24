@@ -55,7 +55,7 @@ object Gene {
   }
 }
 
-class Gene(parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]], constants: Map[Class[_], Array[Const]]) {
+class Gene private (parameters: GeneParameters, k_expression: Map[Class[_], Array[Term]], constants: Map[Class[_], Array[Const]]) {
   val _k_expression = k_expression
   private val _constants = constants
   

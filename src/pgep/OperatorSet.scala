@@ -12,7 +12,7 @@ object OperatorSet {
   }
 }
 
-class OperatorSet(val fitnessFunction: (Genotype) => Double,
-                  val mpf: MatingProbabilityFunction,
-                  val reproducers: List[Reproducer],
-                  val modifiers: List[Mutator])
+class OperatorSet private (val fitnessFunction: (Genotype) => Double,
+                           val mpf: MatingProbabilityFunction,
+                           val reproducers: List[Reproducer],
+                           val modifiers: List[Mutator])

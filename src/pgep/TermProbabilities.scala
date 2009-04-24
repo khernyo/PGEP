@@ -7,6 +7,6 @@ object TermProbabilities {
   }
 }
 
-class TermProbabilities(val functionProbabilities: Double,
-                        val variableProbabilities: Double,
-                        val constantProbabilities: Double)
+class TermProbabilities private (val functionProbabilities: Double,
+                                 val variableProbabilities: Double,
+                                 val constantProbabilities: Double)
