@@ -2,3 +2,4 @@ syntax: glob
 .manager/*.scala
 rngseeds.txt
 bin/*
+out
